@@ -1,6 +1,13 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from io import BytesIO
+
+def convert_df_to_excel(df):
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False)
+    return output.getvalue()
 
 from config import (
     metabolites_selected_onco, metabolites_selected_CVD,
@@ -80,7 +87,6 @@ if uploaded_file:
 
                 row_result.update({
                     f"{disease} — вероятность": round(proba, 2),
-                    f"{disease} — порог": threshold,
                     f"{disease} — исход": label,
                     f"{disease} — скор (0–10)": score
                 })
@@ -92,11 +98,12 @@ if uploaded_file:
     df_results = pd.DataFrame(results)
     st.success("✅ Расчёты завершены!")
     st.dataframe(df_results)
+    excel_data = convert_df_to_excel(df_results)
 
-    # Скачать файл
     st.download_button(
         label="📥 Скачать результаты в Excel",
-        data=df_results.to_excel(index=False),
-        file_name="Результаты_по_всем_моделям.xlsx",
+        data=excel_data,
+        file_name="результаты_по_всем_моделям.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
