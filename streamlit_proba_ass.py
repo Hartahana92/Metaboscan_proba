@@ -70,6 +70,7 @@ for disease in models_info:
 if uploaded_file:
     df_input = pd.read_excel(uploaded_file)
     df_input = df_input.set_index(df_input.columns[0]) if df_input.columns[0] != "Название образца" else df_input
+    df_input = df_input.rename(columns={'GSG_index': 'GSG Index'})
 
     results = []
 
