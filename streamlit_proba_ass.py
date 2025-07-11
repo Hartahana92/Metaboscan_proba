@@ -88,7 +88,7 @@ if uploaded_file:
                 row_result.update({
                     f"{disease} — вероятность": round(proba, 2),
                     f"{disease} — исход": label,
-                    f"{disease} — скор (0–10)": score
+                    f"{disease} — скор (0–10)": 10-score
                 })
 
             except Exception as e:
